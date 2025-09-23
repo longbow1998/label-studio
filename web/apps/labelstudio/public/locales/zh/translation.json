@@ -234,5 +234,9 @@
   "tasks_status": "{finished} 个任务，共 {total} 个 ({progress}%)",
   "models": "模型",
   "create_model": "创建模型",
-  "build_high_quality_model": "使用 LLM 构建高质量模型以自动标注您的数据"
+  "build_high_quality_model": "使用 LLM 构建高质量模型以自动标注您的数据",
+  "invite_people_to_join": "邀请用户加入您的 Label Studio 实例。您邀请的用户将有权访问您的所有项目。",
+  "reset_link": "重置链接",
+  "copy_link": "复制链接",
+  "copied": "已复制！"
 }
