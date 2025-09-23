@@ -9,8 +9,10 @@ import { useProject } from "../../providers/ProjectProvider";
 import { Block, Elem } from "../../utils/bem";
 import { IconInfo } from "@humansignal/icons";
 import { useHistory } from "react-router";
+import { useTranslation } from "react-i18next";
 
 const Webhook = () => {
+  const { t } = useTranslation();
   const [activeWebhook, setActiveWebhook] = useState(null);
   const [webhooks, setWebhooks] = useState(null);
   const [webhooksInfo, setWebhooksInfo] = useState(null);
@@ -72,6 +74,10 @@ const Webhook = () => {
     fetchWebhooksInfo();
   }, [project, projectId]);
 
+  useEffect(() => {
+    WebhookPage.title = t("webhooks");
+  }, [t]);
+
   if (webhooks === null || webhooksInfo === null || projectId === null) {
     return null;
   }
@@ -117,13 +123,10 @@ const Webhook = () => {
           <IconInfo width="28" height="28" />
         </Elem>
         <Elem name="footer-text">
-          <p>
-            Webhooks allow external services to be notified when certain events happen. When the specified events occur,
-            a POST request is sent to each of the URLs you provide.
-          </p>
+          <p>{t("webhooks_allow_external_services")}</p>
           <p>
             <a href="https://labelstud.io/guide/webhooks.html" target="_blank" rel="noreferrer">
-              Read more in the documentation
+              {t("read_more_in_the_documentation")}
             </a>
             .
           </p>
@@ -134,7 +137,7 @@ const Webhook = () => {
 };
 
 export const WebhookPage = {
-  title: "Webhooks",
+  title: "", // This will be set dynamically
   path: "/webhooks",
   component: Webhook,
 };

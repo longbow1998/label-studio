@@ -14,6 +14,7 @@ import "./Import.scss";
 import { Button, CodeBlock, SimpleCard, Spinner, Tooltip } from "@humansignal/ui";
 import samples from "./samples.json";
 import { importFiles } from "./utils";
+import { useTranslation } from "react-i18next";
 
 const importClass = cn("upload_page");
 const dropzoneClass = cn("dropzone");
@@ -148,6 +149,7 @@ export const ImportPage = ({
   addColumns,
   openLabelingConfig,
 }) => {
+  const { t } = useTranslation();
   const [error, setError] = useState();
   const api = useAPI();
   const projectConfigured = project?.label_config !== "<View></View>";
@@ -211,7 +213,7 @@ export const ImportPage = ({
     console.error(err);
     // @todo workaround for error about input size in a wrong html format
     if (typeof err === "string" && err.includes("RequestDataTooBig")) {
-      const message = "Imported file is too big";
+      const message = t("imported_file_is_too_big");
       const extra = err.match(/"exception_value">(.*)<\/pre>/)?.[1];
 
       err = { message, extra };
@@ -258,7 +260,7 @@ export const ImportPage = ({
 
       for (const f of files) {
         if (!allSupportedExtensions.includes(getFileExtension(f.name))) {
-          onError(new Error(`The filetype of file "${f.name}" is not supported.`));
+          onError(new Error(t("unsupported_file_type", { filename: f.name })));
           return;
         }
         fd.append(f.name, f);
@@ -337,21 +339,21 @@ export const ImportPage = ({
           method="POST"
           onSubmit={onLoadURL}
         >
-          <Input placeholder="Dataset URL" name="url" ref={urlRef} rawClassName="h-[40px]" />
-          <Button variant="primary" look="outlined" type="submit" aria-label="Add URL">
-            Add URL
+          <Input placeholder={t("dataset_url")} name="url" ref={urlRef} rawClassName="h-[40px]" />
+          <Button variant="primary" look="outlined" type="submit" aria-label={t("add_url")}>
+            {t("add_url")}
           </Button>
         </form>
-        <span>or</span>
+        <span>{t("or")}</span>
         <Button
           variant="primary"
           look="outlined"
           type="button"
           onClick={() => document.getElementById("file-input").click()}
           leading={<IconUpload />}
-          aria-label="Upload file"
+          aria-label={t("upload_file")}
         >
-          Upload {files.uploaded.length ? "More " : ""}Files
+          {files.uploaded.length ? t("upload_more_files") : t("upload_files")}
         </Button>
         {ff.isActive(ff.FF_SAMPLE_DATASETS) && (
           <SampleDatasetSelect samples={samples} sample={sample} onSampleApplied={onSampleDatasetSelect} />
@@ -359,16 +361,16 @@ export const ImportPage = ({
         <div
           className={importClass.elem("csv-handling").mod({ highlighted: highlightCsvHandling, hidden: !csvHandling })}
         >
-          <span>Treat CSV/TSV as</span>
+          <span>{t("treat_csv_as")}</span>
           <label>
-            <input {...csvProps} value="tasks" checked={csvHandling === "tasks"} /> List of tasks
+            <input {...csvProps} value="tasks" checked={csvHandling === "tasks"} /> {t("list_of_tasks")}
           </label>
           <label>
-            <input {...csvProps} value="ts" checked={csvHandling === "ts"} /> Time Series or Whole Text File
+            <input {...csvProps} value="ts" checked={csvHandling === "ts"} /> {t("time_series_or_whole_text_file")}
           </label>
         </div>
         <div className={importClass.elem("status")}>
-          {files.uploaded.length ? `${files.uploaded.length} files uploaded` : ""}
+          {files.uploaded.length ? t("files_uploaded", { count: files.uploaded.length }) : ""}
         </div>
       </header>
 
@@ -387,26 +389,26 @@ export const ImportPage = ({
                   <div className={`${dropzoneClass.elem("content")} w-full`}>
                     <IconFileUpload height="64" className={dropzoneClass.elem("icon")} />
                     <header>
-                      Drag & drop files here
+                      {t("drag_and_drop_files")}
                       <br />
-                      or click to browse
+                      {t("or_click_to_browse")}
                     </header>
 
                     <dl>
-                      <dt>Images</dt>
+                      <dt>{t("images")}</dt>
                       <dd>{supportedExtensions.image.join(", ")}</dd>
-                      <dt>Audio</dt>
+                      <dt>{t("audio")}</dt>
                       <dd>{supportedExtensions.audio.join(", ")}</dd>
                       <dt>
                         <div className="flex items-center gap-1">
-                          Video
-                          <Tooltip title="Video format support depends on your browser. Click to learn more.">
+                          {t("video")}
+                          <Tooltip title={t("video_format_support_depends_on_your_browser")}>
                             <a
                               href="https://labelstud.io/tags/video#Video-format"
                               target="_blank"
                               rel="noopener noreferrer"
                               className="inline-flex items-center"
-                              aria-label="Learn more about video format support (opens in a new tab)"
+                              aria-label={t("learn_more_about_video_format_support")}
                             >
                               <IconInfoOutline className="w-4 h-4 text-primary-content hover:text-primary-content-hover" />
                             </a>
@@ -414,58 +416,71 @@ export const ImportPage = ({
                         </div>
                       </dt>
                       <dd>{supportedExtensions.video.join(", ")}</dd>
-                      <dt>HTML / HyperText</dt>
+                      <dt>{t("html_hypertext")}</dt>
                       <dd>{supportedExtensions.html.join(", ")}</dd>
-                      <dt>Text</dt>
+                      <dt>{t("text")}</dt>
                       <dd>{supportedExtensions.text.join(", ")}</dd>
-                      <dt>Structured data</dt>
+                      <dt>{t("structured_data")}</dt>
                       <dd>{supportedExtensions.structuredData.join(", ")}</dd>
-                      <dt>PDF</dt>
+                      <dt>{t("pdf")}</dt>
                       <dd>{supportedExtensions.pdf.join(", ")}</dd>
                     </dl>
                     <div className="tips">
-                      <b>Important:</b>
+                      <b>{t("important")}</b>
                       <ul className="mt-2 ml-4 list-disc font-normal">
-                        <li>
-                          We recommend{" "}
-                          <a
-                            href="https://labelstud.io/guide/storage.html"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            aria-label="Cloud Storage documentation (opens in a new tab)"
-                          >
-                            Cloud Storage
-                          </a>{" "}
-                          over direct uploads due to{" "}
-                          <a
-                            href="https://labelstud.io/guide/tasks.html#Import-data-from-the-Label-Studio-UI"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            aria-label="Upload limitations documentation (opens in a new tab)"
-                          >
-                            upload limitations
-                          </a>
-                          .
-                        </li>
-                        <li>
-                          For PDFs, use{" "}
-                          <a
-                            href="https://labelstud.io/templates/multi-page-document-annotation"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            aria-label="Multi-image labeling documentation (opens in a new tab)"
-                          >
-                            multi-image labeling
-                          </a>
-                          . JSONL or Parquet (Enterprise only) files require cloud storage.
-                        </li>
-                        <li>
-                          Check the documentation to{" "}
-                          <a target="_blank" href="https://labelstud.io/guide/predictions.html" rel="noreferrer">
-                            import preannotated data
-                          </a>
-                          .
-                        </li>
+                        <li
+                          dangerouslySetInnerHTML={{
+                            __html: t("we_recommend_cloud_storage", {
+                              cloud_storage_link: `
+                                <a
+                                  href=\"https://labelstud.io/guide/storage.html\"
+                                  target=\"_blank\"
+                                  rel=\"noopener noreferrer\"
+                                  aria-label=\"Cloud Storage documentation (opens in a new tab)\"
+                                >
+                                  ${t("cloud_storage_docs")}
+                                </a>
+                              `,
+                              upload_limitations_link: `
+                                <a
+                                  href=\"https://labelstud.io/guide/tasks.html#Import-data-from-the-Label-Studio-UI\"
+                                  target=\"_blank\"
+                                  rel=\"noopener noreferrer\"
+                                  aria-label=\"Upload limitations documentation (opens in a new tab)\"
+                                >
+                                  ${t("upload_limitations_docs")}
+                                </a>
+                              `,
+                            }),
+                          }}
+                        />
+                        <li
+                          dangerouslySetInnerHTML={{
+                            __html: t("for_pdfs_use_multi_image_labeling", {
+                              multi_image_labeling_link: `
+                                <a
+                                  href=\"https://labelstud.io/templates/multi-page-document-annotation\"
+                                  target=\"_blank\"
+                                  rel=\"noopener noreferrer\"
+                                  aria-label=\"Multi-image labeling documentation (opens in a new tab)\"
+                                >
+                                  ${t("multi_image_labeling_docs")}
+                                </a>
+                              `,
+                            }),
+                          }}
+                        />
+                        <li
+                          dangerouslySetInnerHTML={{
+                            __html: t("check_the_documentation_to_import_preannotated_data", {
+                              import_preannotated_data_link: `
+                                <a target=\"_blank\" href=\"https://labelstud.io/guide/predictions.html\" rel=\"noreferrer\">
+                                  ${t("import_preannotated_data_docs")}
+                                </a>
+                              `,
+                            }),
+                          }}
+                        />
                       </ul>
                     </div>
                   </div>
@@ -475,7 +490,7 @@ export const ImportPage = ({
 
             {showList && (
               <div className="w-full">
-                <SimpleCard title="Files" className="w-full h-full">
+                <SimpleCard title={t("files")} className="w-full h-full">
                   <table>
                     <tbody>
                       {sample && (
@@ -484,7 +499,7 @@ export const ImportPage = ({
                             <div className="flex items-center gap-2">
                               {sample.title}
                               <Badge variant="info" className="h-5 text-xs rounded-sm">
-                                Sample
+                                {t("sample")}
                               </Badge>
                             </div>
                           </td>
@@ -523,7 +538,7 @@ export const ImportPage = ({
               <div className="w-full h-full flex flex-col min-h-[400px]">
                 {projectConfigured ? (
                   <SimpleCard
-                    title="Expected Input Preview"
+                    title={t("expected_input_preview")}
                     className="w-full h-full overflow-hidden flex flex-col"
                     contentClassName="h-[calc(100%-48px)]"
                     flushContent
@@ -531,7 +546,7 @@ export const ImportPage = ({
                     {sampleConfig.data ? (
                       <div className={importClass.elem("code-wrapper")}>
                         <CodeBlock
-                          title="Expected Input Preview"
+                          title={t("expected_input_preview")}
                           code={sampleConfig?.data ?? ""}
                           className="w-full h-full"
                         />
@@ -542,7 +557,7 @@ export const ImportPage = ({
                       </div>
                     ) : sampleConfig.isError ? (
                       <div className="w-[calc(100%-24px)] text-lg text-negative-content bg-negative-background border m-3 rounded-md border-negative-border-subtle p-4">
-                        Something went wrong, the sample data could not be loaded.
+                        {t("something_went_wrong_loading_sample_data")}
                       </div>
                     ) : null}
                   </SimpleCard>
@@ -553,19 +568,23 @@ export const ImportPage = ({
                         <IconCode className="w-6 h-6 text-primary-icon" />
                       </div>
                       <div className="flex flex-col items-center gap-tighter">
-                        <div className="text-label-small text-neutral-content font-medium">View JSON input format</div>
-                        <div className="text-body-small text-neutral-content-subtler text-center">
-                          Setup your{" "}
-                          <Button
-                            type="button"
-                            look="string"
-                            onClick={openConfig}
-                            className="border-none bg-none p-0 m-0 text-primary-content underline"
-                          >
-                            labeling configuration
-                          </Button>{" "}
-                          first to preview the expected JSON data format
-                        </div>
+                        <div className="text-label-small text-neutral-content font-medium">{t("view_json_input_format")}</div>
+                        <div
+                          className="text-body-small text-neutral-content-subtler text-center"
+                          dangerouslySetInnerHTML={{
+                            __html: t("setup_labeling_config_for_json_preview", {
+                              labeling_configuration_link: `
+                                <button
+                                  type=\"button\"
+                                  class=\"border-none bg-none p-0 m-0 text-primary-content underline\"
+                                  onClick={openConfig}
+                                >
+                                  ${t("labeling_configuration")}
+                                </button>
+                              `,
+                            }),
+                          }}
+                        />
                       </div>
                     </div>
                   </SimpleCard>

@@ -1,14 +1,17 @@
 import { useCallback, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@humansignal/ui";
 import { LeaveBlocker, type LeaveBlockerCallbacks } from "../../../components/LeaveBlocker/LeaveBlocker";
 import { modal } from "../../../components/Modal/Modal";
 import { Space } from "../../../components/Space/Space";
+import i18n from "../../../i18n/i18n";
 
 type SaveAndLeaveButtonProps = {
   onSave: () => Promise<void>;
   text?: string;
 };
-const SaveAndLeaveButton = ({ onSave, text = "Save and Leave" }: SaveAndLeaveButtonProps) => {
+const SaveAndLeaveButton = ({ onSave, text }: SaveAndLeaveButtonProps) => {
+  const { t } = useTranslation();
   const [saving, setSaving] = useState(false);
   const saveHandler = useCallback(async () => {
     setSaving(true);
@@ -16,8 +19,8 @@ const SaveAndLeaveButton = ({ onSave, text = "Save and Leave" }: SaveAndLeaveBut
     setSaving(false);
   }, [onSave]);
   return (
-    <Button size="small" onClick={saveHandler} waiting={saving} aria-label="Save changes">
-      {text}
+    <Button size="small" onClick={saveHandler} waiting={saving} aria-label={t("save_changes")}>
+      {text ?? t("save_and_leave")}
     </Button>
   );
 };
@@ -40,8 +43,8 @@ export const unsavedChangesModal = ({
   cancelText,
   discardText,
   okText,
-  title = "You have unsaved changes.",
-  body = "Would you like to save them before leaving?",
+  title,
+  body,
   ...props
 }: UnsavedChangesModalProps) => {
   let modalInstance: any = undefined;
@@ -51,8 +54,8 @@ export const unsavedChangesModal = ({
   };
   modalInstance = modal({
     ...props,
-    title,
-    body: () => <>{body}</>,
+    title: title ?? i18n.t("unsaved_changes_title"),
+    body: () => <>{body ?? i18n.t("unsaved_changes_body")}</>,
     allowClose: true,
     footer: (
       <Space align="end">
@@ -65,7 +68,7 @@ export const unsavedChangesModal = ({
           }}
           autoFocus
         >
-          {cancelText ?? "Cancel"}
+          {cancelText ?? i18n.t("cancel")}
         </Button>
 
         {onDiscard && (
@@ -78,7 +81,7 @@ export const unsavedChangesModal = ({
             }}
             size="small"
           >
-            {discardText ?? "Discard and leave"}
+            {discardText ?? i18n.t("discard_and_leave")}
           </Button>
         )}
 

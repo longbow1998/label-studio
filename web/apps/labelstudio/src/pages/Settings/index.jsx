@@ -9,6 +9,7 @@ import { PredictionsSettings } from "./PredictionsSettings/PredictionsSettings";
 import { StorageSettings } from "./StorageSettings/StorageSettings";
 import { isInLicense, LF_CLOUD_STORAGE_FOR_MANAGERS } from "../../utils/license-flags";
 import "./settings.scss";
+import { useTranslation } from "react-i18next";
 
 const isAllowCloudStorage = !isInLicense(LF_CLOUD_STORAGE_FOR_MANAGERS);
 
@@ -42,11 +43,17 @@ const pages = {
 
 isAllowCloudStorage && (pages.StorageSettings = StorageSettings);
 
+const SettingsPageContent = () => {
+  const { t } = useTranslation();
+  SettingsPage.title = t("settings");
+
+  return <GeneralSettings />;
+};
+
 export const SettingsPage = {
-  title: "Settings",
   path: "/settings",
   exact: true,
   layout: MenuLayout,
-  component: GeneralSettings,
+  component: SettingsPageContent,
   pages,
 };

@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Spinner } from "../../../components";
 import { useAPI } from "../../../providers/ApiProvider";
 import { cn } from "../../../utils/bem";
@@ -8,12 +9,15 @@ import { Button } from "@humansignal/ui";
 
 const listClass = cn("templates-list");
 
-const Arrow = () => (
-  <svg width="8" height="12" viewBox="0 0 8 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <title>Arrow Icon</title>
-    <path opacity="0.9" d="M2 10L6 6L2 2" stroke="currentColor" strokeWidth="2" strokeLinecap="square" />
-  </svg>
-);
+const Arrow = () => {
+  const { t } = useTranslation();
+  return (
+    <svg width="8" height="12" viewBox="0 0 8 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <title>{t("arrow_icon")}</title>
+      <path opacity="0.9" d="M2 10L6 6L2 2" stroke="currentColor" strokeWidth="2" strokeLinecap="square" />
+    </svg>
+  );
+};
 
 const TemplatesInGroup = ({ templates, group, onSelectRecipe }) => {
   const picked = templates
@@ -34,6 +38,7 @@ const TemplatesInGroup = ({ templates, group, onSelectRecipe }) => {
 };
 
 export const TemplatesList = ({ selectedGroup, selectedRecipe, onCustomTemplate, onSelectGroup, onSelectRecipe }) => {
+  const { t } = useTranslation();
   const [groups, setGroups] = React.useState([]);
   const [templates, setTemplates] = React.useState();
   const api = useAPI();
@@ -78,9 +83,9 @@ export const TemplatesList = ({ selectedGroup, selectedRecipe, onCustomTemplate,
           size="small"
           onClick={onCustomTemplate}
           className="w-full"
-          aria-label="Create custom template"
+          aria-label={t("create_custom_template")}
         >
-          Custom template
+          {t("custom_template")}
         </Button>
       </aside>
       <main>
@@ -89,13 +94,7 @@ export const TemplatesList = ({ selectedGroup, selectedRecipe, onCustomTemplate,
       </main>
       <footer className="flex items-center justify-center gap-1">
         <IconInfo className={listClass.elem("info-icon")} width="20" height="20" />
-        <span>
-          See the documentation to{" "}
-          <a href="https://labelstud.io/guide" target="_blank" rel="noreferrer">
-            contribute a template
-          </a>
-          .
-        </span>
+        <span dangerouslySetInnerHTML={{__html: t("see_documentation_to_contribute_template", {link: `<a href=\"https://labelstud.io/guide\" target=\"_blank\" rel=\"noreferrer\">${t("contribute_a_template")}</a>`})}} />
       </footer>
     </div>
   );

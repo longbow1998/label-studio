@@ -9,6 +9,7 @@ import { useFixedLocation, useParams } from "../../providers/RoutesProvider";
 import { BemWithSpecifiContext } from "../../utils/bem";
 import { isDefined } from "../../utils/helpers";
 import "./ExportPage.scss";
+import { useTranslation } from "react-i18next";
 
 // const formats = {
 //   json: 'JSON',
@@ -28,6 +29,7 @@ const { Block, Elem } = BemWithSpecifiContext();
 const wait = () => new Promise((resolve) => setTimeout(resolve, 5000));
 
 export const ExportPage = () => {
+  const { t } = useTranslation();
   const history = useHistory();
   const location = useFixedLocation();
   const pageParams = useParams();
@@ -108,7 +110,7 @@ export const ExportPage = () => {
 
         history.replace(`${path}${search !== "?" ? search : ""}`);
       }}
-      title="Export data"
+      title={t("export_data")}
       style={{ width: 720 }}
       closeOnClickOutside={false}
       allowClose={!downloading}
@@ -131,9 +133,9 @@ export const ExportPage = () => {
             <Elem name="recent">{/* {exportHistory} */}</Elem>
             <Elem name="actions">
               <Space>
-                {downloadingMessage && "Files are being prepared. It might take some time."}
-                <Button className="w-[135px]" onClick={proceedExport} waiting={downloading} aria-label="Export data">
-                  Export
+                {downloadingMessage && t("files_are_being_prepared")}
+                <Button className="w-[135px]" onClick={proceedExport} waiting={downloading} aria-label={t("export_data")}>
+                  {t("export")}
                 </Button>
               </Space>
             </Elem>
@@ -145,9 +147,10 @@ export const ExportPage = () => {
 };
 
 const FormatInfo = ({ availableFormats, selected, onClick }) => {
+  const { t } = useTranslation();
   return (
     <Block name="formats">
-      <Elem name="info">You can export dataset in one of the following formats:</Elem>
+      <Elem name="info">{t("export_dataset_in_following_formats")}</Elem>
       <Elem name="list">
         {availableFormats.map((format) => (
           <Elem
@@ -176,21 +179,20 @@ const FormatInfo = ({ availableFormats, selected, onClick }) => {
         ))}
       </Elem>
       <Elem name="feedback">
-        Can't find an export format?
+        {t("cant_find_export_format")}
         <br />
-        Please let us know in{" "}
-        <a className="no-go" href="https://slack.labelstud.io/?source=product-export" target="_blank" rel="noreferrer">
-          Slack
-        </a>{" "}
-        or submit an issue to the{" "}
-        <a
-          className="no-go"
-          href="https://github.com/HumanSignal/label-studio-converter/issues"
-          target="_blank"
-          rel="noreferrer"
-        >
-          Repository
-        </a>
+        <span
+          dangerouslySetInnerHTML={{
+            __html: t("let_us_know_in_slack", {
+              slack_link: `<a class=\"no-go\" href=\"https://slack.labelstud.io/?source=product-export\" target=\"_blank\" rel=\"noreferrer\">${t(
+                "slack",
+              )}</a>`,
+              repository_link: `<a class=\"no-go\" href=\"https://github.com/HumanSignal/label-studio-converter/issues\" target=\"_blank\" rel=\"noreferrer\">${t(
+                "repository",
+              )}</a>`,
+            }),
+          }}
+        />
       </Elem>
     </Block>
   );

@@ -8,40 +8,41 @@ import { useAPI } from "../../providers/ApiProvider";
 import { CreateProject } from "../CreateProject/CreateProject";
 import { InviteLink } from "../Organization/PeoplePage/InviteLink";
 import type { Page } from "../types/Page";
+import { useTranslation } from "react-i18next";
 
 const PROJECTS_TO_SHOW = 10;
 
 const resources = [
   {
-    title: "Documentation",
+    title: "documentation",
     url: "https://labelstud.io/guide/",
   },
   {
-    title: "API Documentation",
+    title: "api_documentation",
     url: "https://api.labelstud.io/api-reference/introduction/getting-started",
   },
   {
-    title: "Release Notes",
+    title: "release_notes",
     url: "https://labelstud.io/learn/categories/release-notes/",
   },
   {
-    title: "LabelStud.io Blog",
+    title: "label_studio_blog",
     url: "https://labelstud.io/blog/",
   },
   {
-    title: "Slack Community",
+    title: "slack_community",
     url: "https://slack.labelstud.io",
   },
 ];
 
 const actions = [
   {
-    title: "Create Project",
+    title: "create_project",
     icon: IconFolderAdd,
     type: "createProject",
   },
   {
-    title: "Invite People",
+    title: "invite_people",
     icon: IconUserAdd,
     type: "invitePeople",
   },
@@ -50,6 +51,7 @@ const actions = [
 type Action = (typeof actions)[number]["type"];
 
 export const HomePage: Page = () => {
+  const { t } = useTranslation();
   const api = useAPI();
   const [creationDialogOpen, setCreationDialogOpen] = useState(false);
   const [invitationOpen, setInvitationOpen] = useState(false);
@@ -81,10 +83,10 @@ export const HomePage: Page = () => {
         <section className="flex flex-col gap-6">
           <div className="flex flex-col gap-1">
             <Typography variant="headline" size="small">
-              Welcome 👋
+              {t("welcome")}
             </Typography>
             <Typography size="small" className="text-neutral-content-subtler">
-              Let's get you started.
+              {t("lets_get_you_started")}
             </Typography>
           </div>
           <div className="flex justify-start gap-4">
@@ -98,7 +100,7 @@ export const HomePage: Page = () => {
                   onClick={handleActions(action.type)}
                   leading={<action.icon />}
                 >
-                  {action.title}
+                  {t(action.title)}
                 </Button>
               );
             })}
@@ -108,9 +110,9 @@ export const HomePage: Page = () => {
             title={
               data && data?.count > 0 ? (
                 <>
-                  Recent Projects{" "}
+                  {t("recent_projects")}{" "}
                   <a href="/projects" className="text-lg font-normal hover:underline">
-                    View All
+                    {t("view_all")}
                   </a>
                 </>
               ) : null
@@ -121,7 +123,7 @@ export const HomePage: Page = () => {
                 <Spinner />
               </div>
             ) : isError ? (
-              <div className="h-64 flex justify-center items-center">can't load projects</div>
+              <div className="h-64 flex justify-center items-center">{t("cant_load_projects")}</div>
             ) : isSuccess && data && data.results.length === 0 ? (
               <div className="flex flex-col justify-center items-center border border-primary-border-subtle bg-primary-emphasis-subtle rounded-lg h-64">
                 <div
@@ -132,13 +134,13 @@ export const HomePage: Page = () => {
                   <IconFolderOpen />
                 </div>
                 <Typography variant="headline" size="small">
-                  Create your first project
+                  {t("create_your_first_project")}
                 </Typography>
                 <Typography size="small" className="text-neutral-content-subtler">
-                  Import your data and set up the labeling interface to start annotating
+                  {t("import_data_and_setup_labeling_interface")}
                 </Typography>
-                <Button className="mt-4" onClick={() => setCreationDialogOpen(true)} aria-label="Create new project">
-                  Create Project
+                <Button className="mt-4" onClick={() => setCreationDialogOpen(true)} aria-label={t("create_new_project")}>
+                  {t("create_project")}
                 </Button>
               </div>
             ) : isSuccess && data && data.results.length > 0 ? (
@@ -152,7 +154,7 @@ export const HomePage: Page = () => {
         </section>
         <section className="flex flex-col gap-6">
           <HeidiTips collection="projectSettings" />
-          <SimpleCard title="Resources" description="Learn, explore and get help" data-testid="resources-card">
+          <SimpleCard title={t("resources")} description={t("learn_explore_and_get_help")} data-testid="resources-card">
             <ul>
               {resources.map((link) => {
                 return (
@@ -163,7 +165,7 @@ export const HomePage: Page = () => {
                       target="_blank"
                       rel="noreferrer"
                     >
-                      {link.title}
+                      {t(link.title)}
                       <IconExternal className="text-primary-icon" />
                     </a>
                   </li>
@@ -173,7 +175,7 @@ export const HomePage: Page = () => {
           </SimpleCard>
           <div className="flex gap-2 items-center">
             <IconHumanSignal />
-            <span className="text-neutral-content-subtle">Label Studio Version: Community</span>
+            <span className="text-neutral-content-subtle">{t("label_studio_version")}</span>
           </div>
         </section>
       </div>
@@ -183,7 +185,7 @@ export const HomePage: Page = () => {
   );
 };
 
-HomePage.title = "Home";
+HomePage.title = "home";
 HomePage.path = "/";
 HomePage.exact = true;
 
@@ -192,6 +194,7 @@ function ProjectSimpleCard({
 }: {
   project: APIProject;
 }) {
+  const { t } = useTranslation();
   const finished = project.finished_task_number ?? 0;
   const total = project.task_number ?? 0;
   const progress = (total > 0 ? finished / total : 0) * 100;
@@ -211,7 +214,7 @@ function ProjectSimpleCard({
         <div className="flex flex-col gap-1">
           <span className="text-neutral-content">{project.title}</span>
           <div className="text-neutral-content-subtler text-sm">
-            {finished} of {total} Tasks ({total > 0 ? Math.round((finished / total) * 100) : 0}%)
+            {t("tasks_status", { finished, total, progress: total > 0 ? Math.round((finished / total) * 100) : 0 })}
           </div>
         </div>
         <div className="bg-neutral-surface rounded-full overflow-hidden w-full h-2 shadow-neutral-border-subtle shadow-border-1">

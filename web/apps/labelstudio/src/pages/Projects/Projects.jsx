@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams as useRouterParams } from "react-router";
 import { Redirect } from "react-router-dom";
 import { Button } from "@humansignal/ui";
@@ -13,6 +13,7 @@ import { SettingsPage } from "../Settings";
 import { EmptyProjectsList, ProjectsList } from "./ProjectsList";
 import { useAbortController } from "@humansignal/core";
 import "./Projects.scss";
+import { useTranslation } from "react-i18next";
 
 const getCurrentPage = () => {
   const pageNumberFromURL = new URLSearchParams(location.search).get("page");
@@ -21,6 +22,7 @@ const getCurrentPage = () => {
 };
 
 export const ProjectsPage = () => {
+  const { t } = useTranslation();
   const api = React.useContext(ApiContext);
   const abortController = useAbortController();
   const [projectsList, setProjectsList] = React.useState([]);
@@ -103,6 +105,10 @@ export const ProjectsPage = () => {
     await fetchProjects(page, pageSize);
   };
 
+  useEffect(() => {
+    ProjectsPage.title = t("projects");
+  }, [t]);
+
   React.useEffect(() => {
     fetchProjects();
   }, []);
@@ -138,7 +144,6 @@ export const ProjectsPage = () => {
   );
 };
 
-ProjectsPage.title = "Projects";
 ProjectsPage.path = "/projects";
 ProjectsPage.exact = true;
 ProjectsPage.routes = ({ store }) => [
@@ -159,9 +164,10 @@ ProjectsPage.routes = ({ store }) => [
 ];
 ProjectsPage.context = ({ openModal, showButton }) => {
   if (!showButton) return null;
+  const { t } = useTranslation();
   return (
-    <Button onClick={openModal} size="small" aria-label="Create new project">
-      Create
+    <Button onClick={openModal} size="small" aria-label={t("create_new_project")}>
+      {t("create")}
     </Button>
   );
 };

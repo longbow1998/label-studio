@@ -6,9 +6,11 @@ import "./WebhookPage.scss";
 import { format } from "date-fns";
 import { useAPI } from "../../providers/ApiProvider";
 import { WebhookDeleteModal } from "./WebhookDeleteModal";
+import { useTranslation } from "react-i18next";
 
 const WebhookList = ({ onSelectActive, onAddWebhook, webhooks, fetchWebhooks }) => {
   const api = useAPI();
+  const { t } = useTranslation();
 
   if (webhooks === null) return <></>;
 
@@ -28,10 +30,10 @@ const WebhookList = ({ onSelectActive, onAddWebhook, webhooks, fetchWebhooks }) 
 
   return (
     <Block name="webhook">
-      <h1>Webhooks</h1>
+      <h1>{t("webhooks")}</h1>
       <Elem name="controls">
-        <Button onClick={onAddWebhook} aria-label="Add webhook">
-          Add Webhook
+        <Button onClick={onAddWebhook} aria-label={t("add_webhook")}>
+          {t("add_webhook")}
         </Button>
       </Elem>
       <Elem>
@@ -48,16 +50,18 @@ const WebhookList = ({ onSelectActive, onAddWebhook, webhooks, fetchWebhooks }) 
                       {obj.url}
                     </Elem>
                   </Elem>
-                  <Elem name="item-date">Created {format(new Date(obj.created_at), "dd MMM yyyy, HH:mm")}</Elem>
+                  <Elem name="item-date">
+                    {t("created")} {format(new Date(obj.created_at), "dd MMM yyyy, HH:mm")}
+                  </Elem>
                 </Elem>
                 <Elem name="item-control">
                   <Button
                     look="outlined"
                     onClick={() => onSelectActive(obj.id)}
                     icon={<IconPencil />}
-                    aria-label="Edit webhook"
+                    aria-label={t("edit_webhook")}
                   >
-                    Edit
+                    {t("edit")}
                   </Button>
                   <Button
                     onClick={() =>
@@ -72,7 +76,7 @@ const WebhookList = ({ onSelectActive, onAddWebhook, webhooks, fetchWebhooks }) 
                     look="outlined"
                     icon={<IconCross />}
                   >
-                    Delete
+                    {t("delete")}
                   </Button>
                 </Elem>
               </Elem>

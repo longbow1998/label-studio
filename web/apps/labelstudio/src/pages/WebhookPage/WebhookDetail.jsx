@@ -9,8 +9,10 @@ import "./WebhookPage.scss";
 import { Space } from "../../components/Space/Space";
 import { useProject } from "../../providers/ProjectProvider";
 import { WebhookDeleteModal } from "./WebhookDeleteModal";
+import { useTranslation } from "react-i18next";
 
 const WebhookDetail = ({ webhook, webhooksInfo, fetchWebhooks, onBack, onSelectActive }) => {
+  const { t } = useTranslation();
   // if webhook === null - create mod
   // else update
   const rootClass = cn("webhook-detail");
@@ -92,9 +94,9 @@ const WebhookDetail = ({ webhook, webhooksInfo, fetchWebhooks, onBack, onSelectA
               onSelectActive(null);
             }}
           >
-            Webhooks
+            {t("webhooks")}
           </Elem>{" "}
-          / {webhook === null ? "New Webhook" : "Edit Webhook"}
+          / {webhook === null ? t("new_webhook") : t("edit_webhook")}
         </>
       </Elem>
       <Elem name="content">
@@ -122,11 +124,11 @@ const WebhookDetail = ({ webhook, webhooksInfo, fetchWebhooks, onBack, onSelectA
             }}
           >
             <Form.Row columnCount={1}>
-              <Label text="Payload URL" large />
+              <Label text={t("payload_url")} large />
               <Space className={rootClass.elem("url-space")}>
                 <Input name="url" className={rootClass.elem("url-input")} placeholder="URL" />
                 <Space align="end" className={rootClass.elem("activator")}>
-                  <span className={rootClass.elem("black-text")}>Is Active</span>
+                  <span className={rootClass.elem("black-text")}>{t("is_active")}</span>
                   <Toggle
                     skip
                     checked={isActive}
@@ -141,14 +143,14 @@ const WebhookDetail = ({ webhook, webhooksInfo, fetchWebhooks, onBack, onSelectA
               <div className={rootClass.elem("headers")}>
                 <div className={rootClass.elem("headers-content")}>
                   <Space spread className={rootClass.elem("headers-control")}>
-                    <Label text="Headers" large />
+                    <Label text={t("headers")} large />
                     <Button
                       type="button"
                       onClick={onAddHeaderClick}
                       look="string"
                       leading={<IconPlus />}
                       className={rootClass.elem("headers-add")}
-                      tooltip="Add Header"
+                      tooltip={t("add_header")}
                     />
                   </Space>
                   {headers.map(([headKey, headValue], index) => {
@@ -161,14 +163,14 @@ const WebhookDetail = ({ webhook, webhooksInfo, fetchWebhooks, onBack, onSelectA
                         <Input
                           className={rootClass.elem("headers-input")}
                           skip
-                          placeholder="header"
+                          placeholder={t("header")}
                           value={headKey}
                           onChange={(e) => onHeaderChange("key", e, index)}
                         />
                         <Input
                           className={rootClass.elem("headers-input")}
                           skip
-                          placeholder="value"
+                          placeholder={t("value")}
                           value={headValue}
                           onChange={(e) => onHeaderChange("value", e, index)}
                         />
@@ -180,7 +182,7 @@ const WebhookDetail = ({ webhook, webhooksInfo, fetchWebhooks, onBack, onSelectA
                             look="string"
                             icon={<IconCross />}
                             onClick={() => onHeaderRemove(index)}
-                            tooltip="Remove Header"
+                            tooltip={t("remove_header")}
                           />
                         </div>
                       </Space>
@@ -191,7 +193,7 @@ const WebhookDetail = ({ webhook, webhooksInfo, fetchWebhooks, onBack, onSelectA
             </Form.Row>
             <Block name="webhook-payload">
               <Elem name="title">
-                <Label text="Payload" large />
+                <Label text={t("payload")} large />
               </Elem>
               <Elem name="content">
                 <Elem name="content-row">
@@ -201,14 +203,14 @@ const WebhookDetail = ({ webhook, webhooksInfo, fetchWebhooks, onBack, onSelectA
                     onChange={(e) => {
                       setSendPayload(e.target.checked);
                     }}
-                    label="Send payload"
+                    label={t("send_payload")}
                   />
                 </Elem>
                 <Elem name="content-row">
                   <Toggle
                     skip
                     checked={sendForAllActions}
-                    label="Send for all actions"
+                    label={t("send_for_all_actions")}
                     onChange={(e) => {
                       setSendForAllActions(e.target.checked);
                     }}
@@ -218,7 +220,7 @@ const WebhookDetail = ({ webhook, webhooksInfo, fetchWebhooks, onBack, onSelectA
                   {!sendForAllActions ? (
                     <Elem name="content-row-actions">
                       <Elem tag="h4" name="title" mod={{ black: true }}>
-                        Send Payload for
+                        {t("send_payload_for")}
                       </Elem>
                       <Elem name="actions">
                         {Object.entries(webhooksInfo).map(([key, value]) => {
@@ -262,7 +264,7 @@ const WebhookDetail = ({ webhook, webhooksInfo, fetchWebhooks, onBack, onSelectA
                     })
                   }
                 >
-                  Delete Webhook
+                  {t("delete_webhook")}
                 </Button>
               )}
               <Space>
@@ -274,15 +276,15 @@ const WebhookDetail = ({ webhook, webhooksInfo, fetchWebhooks, onBack, onSelectA
                   look="outlined"
                   className={rootClass.elem("cancel-button")}
                   onClick={onBack}
-                  aria-label="Cancel webhook edit"
+                  aria-label={t("cancel_webhook_edit")}
                 >
-                  Cancel
+                  {t("cancel")}
                 </Button>
                 <Button
                   className={rootClass.elem("save-button")}
-                  aria-label={webhook === null ? "Add webhook" : "Save webhook"}
+                  aria-label={webhook === null ? t("add_webhook") : t("save_webhook")}
                 >
-                  {webhook === null ? "Add Webhook" : "Save Changes"}
+                  {webhook === null ? t("add_webhook") : t("save_changes")}
                 </Button>
               </Space>
             </Elem>

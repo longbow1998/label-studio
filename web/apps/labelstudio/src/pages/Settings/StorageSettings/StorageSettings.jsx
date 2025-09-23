@@ -2,28 +2,35 @@ import { cn } from "../../../utils/bem";
 import { StorageSet } from "./StorageSet";
 import { isInLicense, LF_CLOUD_STORAGE_FOR_MANAGERS } from "../../../utils/license-flags";
 import { Typography } from "@humansignal/ui";
+import { useTranslation } from "react-i18next";
+import { useEffect } from "react";
 
 const isAllowCloudStorage = !isInLicense(LF_CLOUD_STORAGE_FOR_MANAGERS);
 
 export const StorageSettings = () => {
+  const { t } = useTranslation();
   const rootClass = cn("storage-settings"); // TODO: Remove in the next BEM cleanup
+
+  useEffect(() => {
+    StorageSettings.title = t("cloud_storage");
+  }, [t]);
 
   return isAllowCloudStorage ? (
     <section className="max-w-[680px]">
       <Typography variant="headline" size="medium" className="mb-base">
-        Cloud Storage
+        {t("cloud_storage")}
       </Typography>
       <Typography size="small" className="text-neutral-content-subtler mb-wider">
-        Use cloud or database storage as the source for your labeling tasks or the target of your completed annotations.
+        {t("cloud_storage_desc")}
       </Typography>
 
       <div className="grid grid-cols-2 gap-8">
-        <StorageSet title="Source Cloud Storage" buttonLabel="Add Source Storage" rootClass={rootClass} />
+        <StorageSet title={t("source_cloud_storage")} buttonLabel={t("add_source_storage")} rootClass={rootClass} />
 
         <StorageSet
-          title="Target Cloud Storage"
+          title={t("target_cloud_storage")}
           target="export"
-          buttonLabel="Add Target Storage"
+          buttonLabel={t("add_target_storage")}
           rootClass={rootClass}
         />
       </div>
@@ -31,5 +38,4 @@ export const StorageSettings = () => {
   ) : null;
 };
 
-StorageSettings.title = "Cloud Storage";
 StorageSettings.path = "/storage";

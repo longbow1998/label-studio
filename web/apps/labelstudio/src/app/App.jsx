@@ -25,6 +25,8 @@ import { RootPage } from "./RootPage";
 import { ff } from "@humansignal/core";
 import "@humansignal/ui/src/tailwind.css";
 import "./App.scss";
+import { useTranslation } from "react-i18next";
+import { Suspense } from "react";
 
 const baseURL = new URL(APP_SETTINGS.hostname || location.origin);
 export const UNBLOCK_HISTORY_MESSAGE = "UNBLOCK_HISTORY";
@@ -56,7 +58,13 @@ window.LSH = browserHistory;
 
 initSentry(browserHistory);
 
-const App = ({ content }) => {
+const AppContent = ({ content }) => {
+  const { t, i18n } = useTranslation();
+
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+  };
+
   return (
     <ErrorBoundary>
       <Router history={browserHistory}>
@@ -75,6 +83,11 @@ const App = ({ content }) => {
           ].filter(Boolean)}
         >
           <AsyncPage>
+            <div>
+              <button onClick={() => changeLanguage('en')}>English</button>
+              <button onClick={() => changeLanguage('zh')}>中文</button>
+            </div>
+            <h1>{t('greeting')}</h1>
             <DraftGuard />
             <RootPage content={content} />
             <ToastViewport />
@@ -83,7 +96,16 @@ const App = ({ content }) => {
       </Router>
     </ErrorBoundary>
   );
+}
+
+const App = ({ content }) => {
+  return (
+    <Suspense fallback="loading">
+      <AppContent content={content} />
+    </Suspense>
+  );
 };
+
 
 const root = document.querySelector(".app-wrapper");
 const content = document.querySelector("#main-content");

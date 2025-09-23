@@ -12,8 +12,10 @@ import { useStorageCard } from "./hooks/useStorageCard";
 import { ff } from "@humansignal/core";
 import { StorageProviderForm } from "@humansignal/app-common/blocks/StorageProviderForm";
 import { providers } from "./providers";
+import { useTranslation } from "react-i18next";
 
 export const StorageSet = ({ title, target, rootClass, buttonLabel }) => {
+  const { t } = useTranslation();
   const api = useContext(ApiContext);
   const project = useAtomValue(projectAtom);
   const storageTypesQueryKey = ["storage-types", target];
@@ -36,9 +38,9 @@ export const StorageSet = ({ title, target, rootClass, buttonLabel }) => {
 
   const showStorageFormModal = useCallback(
     (storage) => {
-      const action = storage ? "Edit" : "Connect";
-      const actionTarget = target === "export" ? "Target" : "Source";
-      const title = `${action} ${actionTarget} Storage`;
+      const action = storage ? t("edit") : t("connect");
+      const actionTarget = target === "export" ? t("target") : t("source");
+      const title = `${action} ${actionTarget} ${t("storage")}`;
 
       const modalRef = modal({
         title,
@@ -82,7 +84,7 @@ export const StorageSet = ({ title, target, rootClass, buttonLabel }) => {
         ),
       });
     },
-    [project, fetchStorages, target, rootClass],
+    [project, fetchStorages, target, rootClass, t],
   );
 
   const onEditStorage = useCallback(
@@ -95,8 +97,8 @@ export const StorageSet = ({ title, target, rootClass, buttonLabel }) => {
   const onDeleteStorage = useCallback(
     async (storage) => {
       confirm({
-        title: "Deleting storage",
-        body: "This action cannot be undone. Are you sure?",
+        title: t("deleting_storage"),
+        body: t("delete_storage_confirmation"),
         buttonLook: "destructive",
         onOk: async () => {
           const response = await api.callApi("deleteStorage", {
@@ -111,13 +113,13 @@ export const StorageSet = ({ title, target, rootClass, buttonLabel }) => {
         },
       });
     },
-    [fetchStorages],
+    [fetchStorages, t],
   );
 
   return (
     <Columns.Column title={title}>
       <div className={rootClass.elem("controls")}>
-        <Button onClick={() => showStorageFormModal()} disabled={loading} look="outlined" aria-label="Add storage">
+        <Button onClick={() => showStorageFormModal()} disabled={loading} look="outlined" aria-label={t("add_storage")}>
           {buttonLabel}
         </Button>
       </div>

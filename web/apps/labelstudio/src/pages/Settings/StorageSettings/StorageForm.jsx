@@ -6,9 +6,10 @@ import { Oneof } from "../../../components/Oneof/Oneof";
 import { ApiContext } from "../../../providers/ApiProvider";
 import { Block, Elem } from "../../../utils/bem";
 import { isDefined } from "../../../utils/helpers";
+import { useTranslation } from "react-i18next";
 
 export const StorageForm = forwardRef(({ onSubmit, target, project, rootClass, storage, storageTypes }, ref) => {
-  /**@type {import('react').RefObject<Form>} */
+  const { t } = useTranslation();
   const api = useContext(ApiContext);
   const formRef = ref ?? useRef();
   const [type, setType] = useState(storage?.type ?? storageTypes?.[0]?.name ?? "s3");
@@ -34,7 +35,7 @@ export const StorageForm = forwardRef(({ onSubmit, target, project, rootClass, s
         skip: true,
         type: "select",
         name: "storage_type",
-        label: "Storage Type",
+        label: t("storage_type"),
         disabled: !!storage,
         options: storageTypes.map(({ name, title }) => ({
           value: name,
@@ -60,8 +61,6 @@ export const StorageForm = forwardRef(({ onSubmit, target, project, rootClass, s
         body.id = storage.id;
       }
 
-      // we're using api provided by the form to be able to save
-      // current api context and render inline erorrs properly
       const response = await form.api.callApi("validateStorage", {
         params: {
           target,
@@ -100,10 +99,10 @@ export const StorageForm = forwardRef(({ onSubmit, target, project, rootClass, s
             <Block name="form-indicator">
               <Oneof value={connectionValid}>
                 <Elem tag="span" mod={{ type: "success" }} name="item" case={true}>
-                  Successfully connected!
+                  {t("successfully_connected")}
                 </Elem>
                 <Elem tag="span" mod={{ type: "fail" }} name="item" case={false}>
-                  Connection failed
+                  {t("connection_failed")}
                 </Elem>
               </Oneof>
             </Block>
@@ -117,12 +116,12 @@ export const StorageForm = forwardRef(({ onSubmit, target, project, rootClass, s
             look="outlined"
             waiting={checking}
             onClick={validateStorageConnection}
-            aria-label="Test storage connection"
+            aria-label={t("test_storage_connection")}
           >
-            Check Connection
+            {t("check_connection")}
           </Button>
-          <Button type="submit" aria-label={storage ? "Save storage settings" : "Add storage"}>
-            {storage ? "Save" : "Add Storage"}
+          <Button type="submit" aria-label={storage ? t("save_storage_settings") : t("add_storage")}>
+            {storage ? t("save") : t("add_storage")}
           </Button>
         </div>
       </Form.Actions>

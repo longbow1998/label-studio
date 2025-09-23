@@ -12,13 +12,19 @@ import { CustomBackendForm } from "./Forms";
 import { TestRequest } from "./TestRequest";
 import { StartModelTraining } from "./StartModelTraining";
 import "./MachineLearningSettings.scss";
+import { useTranslation } from "react-i18next";
 
 export const MachineLearningSettings = () => {
+  const { t } = useTranslation();
   const api = useAPI();
   const { project, fetchProject } = useContext(ProjectContext);
   const [backends, setBackends] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    MachineLearningSettings.title = t("model");
+  }, [t]);
 
   const fetchBackends = useCallback(async () => {
     setLoading(true);
@@ -37,7 +43,7 @@ export const MachineLearningSettings = () => {
   const startTrainingModal = useCallback(
     (backend) => {
       const modalProps = {
-        title: "Start Model Training",
+        title: t("start_model_training"),
         style: { width: 760 },
         closeOnClickOutside: true,
         body: <StartModelTraining backend={backend} />,
@@ -45,13 +51,13 @@ export const MachineLearningSettings = () => {
 
       modal(modalProps);
     },
-    [project],
+    [project, t],
   );
 
   const showRequestModal = useCallback(
     (backend) => {
       const modalProps = {
-        title: "Test Request",
+        title: t("test_request"),
         style: { width: 760 },
         closeOnClickOutside: true,
         body: <TestRequest backend={backend} />,
@@ -59,14 +65,14 @@ export const MachineLearningSettings = () => {
 
       modal(modalProps);
     },
-    [project],
+    [project, t],
   );
 
   const showMLFormModal = useCallback(
     (backend) => {
       const action = backend ? "updateMLBackend" : "addMLBackend";
       const modalProps = {
-        title: `${backend ? "Edit" : "Connect"} Model`,
+        title: `${backend ? t("edit_model") : t("connect_model")} `,
         style: { width: 760 },
         closeOnClickOutside: false,
         body: (
@@ -84,7 +90,7 @@ export const MachineLearningSettings = () => {
 
       const modalRef = modal(modalProps);
     },
-    [project, fetchBackends],
+    [project, fetchBackends, t],
   );
 
   useEffect(() => {
@@ -97,25 +103,25 @@ export const MachineLearningSettings = () => {
     <section>
       <div className="w-[40rem]">
         <Typography variant="headline" size="medium" className="mb-base">
-          Model
+          {t("model")}
         </Typography>
         {loading && <Spinner size={32} />}
         {loaded && backends.length === 0 && (
           <EmptyState
             icon={<IconModels />}
-            title="Let’s connect your first model"
-            description="Connect a machine learning model to generate predictions. These predictions can be compared side by side, used for efficient pre‒labeling and, to aid in active learning, directing users to the most impactful labeling tasks."
+            title={t("connect_first_model")}
+            description={t("connect_first_model_desc")}
             action={
-              <Button primary onClick={() => showMLFormModal()} aria-label="Add machine learning model">
-                Connect Model
+              <Button primary onClick={() => showMLFormModal()} aria-label={t("add_ml_model")}>
+                {t("connect_model")}
               </Button>
             }
             footer={
               <div>
-                Need help?
+                {t("need_help")}
                 <br />
                 <a href="https://labelstud.io/guide/ml" target="_blank" rel="noreferrer">
-                  Learn more about connecting models in our docs
+                  {t("learn_more_models")}
                 </a>
               </div>
             }
@@ -132,22 +138,17 @@ export const MachineLearningSettings = () => {
         {backends.length > 0 && (
           <div className="my-wide">
             <Typography size="small" className="text-neutral-content-subtler">
-              A connected model has been detected! If you wish to fetch predictions from this model, please follow these
-              steps:
+              {t("connected_model_detected")}
             </Typography>
-            <Typography size="small" className="text-neutral-content-subtler mt-base">
-              1. Navigate to the <i>Data Manager</i>.
-            </Typography>
+            <Typography size="small" className="text-neutral-content-subtler mt-base" dangerouslySetInnerHTML={{ __html: t("navigate_to_dm") }} />
             <Typography size="small" className="text-neutral-content-subtler mt-tighter">
-              2. Select the desired tasks.
+              {t("select_desired_tasks")}
             </Typography>
-            <Typography size="small" className="text-neutral-content-subtler mt-tighter">
-              3. Click on <i>Batch predictions</i> from the <i>Actions</i> menu.
-            </Typography>
+            <Typography size="small" className="text-neutral-content-subtler mt-tighter" dangerouslySetInnerHTML={{ __html: t("click_batch_predictions") }}/>
             <Typography size="small" className="text-neutral-content-subtler mt-base">
-              If you want to use the model predictions for prelabeling, please configure this in the{" "}
+              {t("model_prelabeling_info")} {" "}
               <NavLink to="annotation" className="hover:underline">
-                Annotation settings
+                {t("annotation_settings")}
               </NavLink>
               .
             </Typography>
@@ -163,12 +164,12 @@ export const MachineLearningSettings = () => {
           {backends.length > 0 && (
             <div className="p-wide border border-neutral-border rounded-md">
               <Form.Row columnCount={1}>
-                <Label text="Configuration" large />
+                <Label text={t("configuration")} large />
 
                 <div>
                   <Toggle
-                    label="Start model training on annotation submission"
-                    description="This option will send a request to /train with information about annotations. You can use this to enable an Active Learning loop. You can also manually start training through model menu in its card."
+                    label={t("start_model_training_on_submission")}
+                    description={t("start_model_training_on_submission_desc")}
                     name="start_training_on_annotation_update"
                   />
                 </div>
@@ -179,10 +180,10 @@ export const MachineLearningSettings = () => {
           {backends.length > 0 && (
             <Form.Actions>
               <Form.Indicator>
-                <span case="success">Saved!</span>
+                <span case="success">{t("saved")}</span>
               </Form.Indicator>
-              <Button type="submit" look="primary" className="w-[120px]" aria-label="Save machine learning settings">
-                Save
+              <Button type="submit" look="primary" className="w-[120px]" aria-label={t("save_ml_settings")}>
+                {t("save")}
               </Button>
             </Form.Actions>
           )}
@@ -192,5 +193,4 @@ export const MachineLearningSettings = () => {
   );
 };
 
-MachineLearningSettings.title = "Model";
 MachineLearningSettings.path = "/ml";
