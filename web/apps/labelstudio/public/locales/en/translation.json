@@ -79,7 +79,7 @@
   "delete_predictions": "Delete {count} Predictions",
   "reset_cache_desc": "Reset Cache may help in cases like if you are unable to modify the labeling configuration due to validation errors concerning existing labels, but you are confident that the labels don\'t exist. You can use this action to reset the cache and try again.",
   "reset_cache": "Reset Cache",
-  "drop_all_tabs_desc": "If the Data Manager is not loading, dropping all Data Manager tabs can help.",
+  "drop_all_tabs_desc": "If the DataManager is not loading, dropping all Data Manager tabs can help.",
   "drop_all_tabs": "Drop All Tabs",
   "delete_project_desc": "Deleting a project removes all tasks, annotations, and project data from the database.",
   "delete_project": "Delete Project",
@@ -231,5 +231,12 @@
   "learn_explore_and_get_help": "Learn, explore and get help",
   "label_studio_version": "Label Studio Version: Community",
   "home": "Home",
-  "tasks_status": "{finished} of {total} Tasks ({progress}%)"
+  "tasks_status": "{finished} of {total} Tasks ({progress}%)",
+  "models": "Models",
+  "create_model": "Create Model",
+  "build_high_quality_model": "Build a high quality model to auto-label your data using LLMs",
+  "invite_people_to_join": "Invite people to join your Label Studio instance. People that you invite have full access to all of your projects.",
+  "reset_link": "Reset Link",
+  "copy_link": "Copy link",
+  "copied": "Copied!"
 }

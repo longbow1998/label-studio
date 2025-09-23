@@ -231,5 +231,8 @@
   "learn_explore_and_get_help": "学习、探索和寻求帮助",
   "label_studio_version": "Label Studio 版本：社区版",
   "home": "主页",
-  "tasks_status": "{finished} 个任务，共 {total} 个 ({progress}%)"
+  "tasks_status": "{finished} 个任务，共 {total} 个 ({progress}%)",
+  "models": "模型",
+  "create_model": "创建模型",
+  "build_high_quality_model": "使用 LLM 构建高质量模型以自动标注您的数据"
 }
