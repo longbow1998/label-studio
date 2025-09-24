@@ -238,5 +238,13 @@
   "invite_people_to_join": "Invite people to join your Label Studio instance. People that you invite have full access to all of your projects.",
   "reset_link": "Reset Link",
   "copy_link": "Copy link",
-  "copied": "Copied!"
+  "copied": "Copied!",
+  "missing_task_or_project": "The {{object}} you are trying to access does not exist or is no longer available.",
+  "task": "task",
+  "project": "project",
+  "project_deleted_or_not_created": "Project was deleted or not yet created",
+  "back_to_projects": "Back to projects",
+  "labeling": "Labeling",
+  "labeling_instructions_modal_title": "Labeling Instructions",
+  "instructions": "Instructions"
 }

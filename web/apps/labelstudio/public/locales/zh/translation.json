@@ -238,5 +238,13 @@
   "invite_people_to_join": "邀请用户加入您的 Label Studio 实例。您邀请的用户将有权访问您的所有项目。",
   "reset_link": "重置链接",
   "copy_link": "复制链接",
-  "copied": "已复制！"
+  "copied": "已复制！",
+  "missing_task_or_project": "您正在尝试访问的{{object}}不存在或不再可用。",
+  "task": "任务",
+  "project": "项目",
+  "project_deleted_or_not_created": "项目已被删除或尚未创建",
+  "back_to_projects": "返回项目",
+  "labeling": "标注",
+  "labeling_instructions_modal_title": "标注说明",
+  "instructions": "说明"
 }
