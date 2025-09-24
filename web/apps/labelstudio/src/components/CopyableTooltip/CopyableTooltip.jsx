@@ -1,8 +1,10 @@
 import { Children, cloneElement, forwardRef, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { useCopyText } from "../../hooks/useCopyText";
 import { Tooltip } from "@humansignal/ui";
 
 export const CopyableTooltip = forwardRef(({ children, title, textForCopy, ...restProps }, ref) => {
+  const { t } = useTranslation();
   const [copied, copyText] = useCopyText({ defaultText: textForCopy });
 
   const clickHandler = useCallback((e) => {
@@ -18,5 +20,5 @@ export const CopyableTooltip = forwardRef(({ children, title, textForCopy, ...re
     onClick: clickHandler,
   });
 
-  return <Tooltip title={copied ? "Copied!" : title} onClick={clickHandler} {...restProps} children={clone} />;
+  return <Tooltip title={copied ? t("copied") : title} onClick={clickHandler} {...restProps} children={clone} />;
 });

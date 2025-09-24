@@ -1,4 +1,5 @@
 import { forwardRef, useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { isDefined } from "../../utils/helpers";
 import { FormContext } from "./FormContext";
 import * as Validators from "./Validation/Validators";
@@ -25,6 +26,8 @@ export const FormField = forwardRef(
     /**@type {Form} */
     const context = useContext(FormContext);
     const [dependencyField, setDependencyField] = useState(null);
+    const { t } = useTranslation();
+    const translatedValidators = Validators.getTranslatedValidators(t);
 
     const field = ref ?? useRef();
 
@@ -32,7 +35,7 @@ export const FormField = forwardRef(
 
     validators?.forEach?.((validator) => {
       const [name, value] = validator.split(/:(.+)/).slice(0, 2);
-      const validatorFunc = Validators[name];
+      const validatorFunc = translatedValidators[name] ?? Validators[name];
 
       if (isDefined(validatorFunc)) {
         if (isDefined(value)) {
@@ -43,7 +46,7 @@ export const FormField = forwardRef(
       }
     });
 
-    if (required) validation.push(Validators.required);
+    if (required) validation.push(translatedValidators.required);
 
     useEffect(() => {
       if (!context || !dependency) return;

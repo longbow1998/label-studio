@@ -5,19 +5,22 @@ import { modal } from "../../../components/Modal/Modal";
 import { Oneof } from "../../../components/Oneof/Oneof";
 import { getLastTraceback } from "../../../utils/helpers";
 import { useCopyText } from "@humansignal/core/lib/hooks/useCopyText";
+import { useTranslation } from "react-i18next";
 
 // Component to handle copy functionality within the modal
 const CopyButton = ({ msg }) => {
+  const { t } = useTranslation();
   const [copyText, copied] = useCopyText(msg);
 
   return (
     <Button variant="neutral" icon={<IconFileCopy />} onClick={copyText} disabled={copied} className="w-[7rem]">
-      {copied ? "Copied!" : "Copy"}
+      {copied ? t("copied") : t("copy")}
     </Button>
   );
 };
 
 export const StorageSummary = ({ target, storage, className, storageTypes = [] }) => {
+  const { t } = useTranslation();
   const storageStatus = storage.status.replace(/_/g, " ").replace(/(^\w)/, (match) => match.toUpperCase());
   const last_sync_count = storage.last_sync_count ? storage.last_sync_count : 0;
 
@@ -31,26 +34,31 @@ export const StorageSummary = ({ target, storage, className, storageTypes = [] }
       : 0;
 
   // help text for tasks and annotations
-  const tasks_added_help = `${last_sync_count} new tasks added during the last sync.`;
+  const tasks_added_help = t("tasks_added_help", { count: last_sync_count });
   const tasks_total_help = [
-    `${tasks_existed} tasks that have been found and already synced will not be added to the project again.`,
-    `${tasks_existed + last_sync_count} tasks have been added in total for this storage.`,
+    t("tasks_total_help_1", { count: tasks_existed }),
+    t("tasks_total_help_2", { count: tasks_existed + last_sync_count }),
   ].join("\n");
-  const annotations_help = `${last_sync_count} annotations successfully saved during the last sync.`;
+  const annotations_help = t("annotations_help", { count: last_sync_count });
   const total_annotations_help =
     typeof storage.meta?.total_annotations !== "undefined"
-      ? `${storage.meta.total_annotations} total annotations seen in the project at the sync moment.`
+      ? t("total_annotations_help", { count: storage.meta.total_annotations })
       : "";
 
   const handleButtonClick = () => {
     const msg =
-      `Error logs for ${target === "export" ? "export " : ""}${storage.type} ` +
-      `storage ${storage.id} in project ${storage.project} and job ${storage.last_sync_job}:\n\n` +
-      `${getLastTraceback(storage.traceback)}\n\n` +
-      `meta = ${JSON.stringify(storage.meta)}\n`;
+      t("error_log_message", {
+        target: target === "export" ? t("export") : "",
+        type: storage.type,
+        id: storage.id,
+        project: storage.project,
+        job: storage.last_sync_job,
+        traceback: getLastTraceback(storage.traceback),
+        meta: JSON.stringify(storage.meta),
+      }) + "\n";
 
     const currentModal = modal({
-      title: "Storage Sync Error Log",
+      title: t("storage_sync_error_log"),
       body: <CodeBlock code={msg} variant="negative" className="max-h-[50vh] overflow-y-auto" />,
       footer: (
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -61,18 +69,18 @@ export const StorageSummary = ({ target, storage, className, storageTypes = [] }
                   href="https://labelstud.io/guide/storage.html#Troubleshooting"
                   target="_blank"
                   rel="noreferrer noopener"
-                  aria-label="Learn more about cloud storage troubleshooting"
+                  aria-label={t("learn_more_troubleshooting")}
                 >
-                  See docs
+                  {t("see_docs")}
                 </a>{" "}
-                for troubleshooting tips on cloud storage connections.
+                {t("troubleshooting_tips")}
               </>
             </div>
           )}
           <Space>
             <CopyButton msg={msg} />
             <Button variant="primary" className="w-[7rem]" onClick={() => currentModal.close()}>
-              Close
+              {t("close")}
             </Button>
           </Space>
         </div>
@@ -86,7 +94,7 @@ export const StorageSummary = ({ target, storage, className, storageTypes = [] }
   return (
     <div className={className}>
       <DescriptionList>
-        <DescriptionList.Item term="Type">
+        <DescriptionList.Item term={t("type")}>
           {(storageTypes ?? []).find((s) => s.name === storage.type)?.title ?? storage.type}
         </DescriptionList.Item>
 
@@ -99,13 +107,13 @@ export const StorageSummary = ({ target, storage, className, storageTypes = [] }
         </Oneof>
 
         <DescriptionList.Item
-          term="Status"
+          term={t("status")}
           help={[
-            "Initialized: storage was added, but never synced; sufficient for starting URI link resolving",
-            "Queued: sync job is in the queue, but not yet started",
-            "In progress: sync job is running",
-            "Failed: sync job stopped, some errors occurred",
-            "Completed: sync job completed successfully",
+            t("status_initialized_desc"),
+            t("status_queued_desc"),
+            t("status_in_progress_desc"),
+            t("status_failed_desc"),
+            t("status_completed_desc"),
           ].join("\n")}
         >
           {storageStatus === "Failed" ? (
@@ -113,7 +121,7 @@ export const StorageSummary = ({ target, storage, className, storageTypes = [] }
               className="cursor-pointer border-b border-dashed border-negative-border-subtle text-negative-content"
               onClick={handleButtonClick}
             >
-              Failed (View Logs)
+              {t("failed_view_logs")}
             </span>
           ) : (
             storageStatus
@@ -121,27 +129,35 @@ export const StorageSummary = ({ target, storage, className, storageTypes = [] }
         </DescriptionList.Item>
 
         {target === "export" ? (
-          <DescriptionList.Item term="Annotations" help={`${annotations_help}\n${total_annotations_help}`}>
+          <DescriptionList.Item term={t("annotations")} help={`${annotations_help}\n${total_annotations_help}`}>
             <Tooltip title={annotations_help}>
               <span>{last_sync_count}</span>
             </Tooltip>
             <Tooltip title={total_annotations_help}>
-              <span> ({total_annotations} total)</span>
+              <span>
+                {" "}
+                ({t("total_annotations", { count: total_annotations })})
+              </span>
             </Tooltip>
           </DescriptionList.Item>
         ) : (
-          <DescriptionList.Item term="Tasks" help={`${tasks_added_help}\n${tasks_total_help}`}>
+          <DescriptionList.Item term={t("tasks")} help={`${tasks_added_help}\n${tasks_total_help}`}>
             <Tooltip title={`${tasks_added_help}\n${tasks_total_help}`} style={{ whiteSpace: "pre-wrap" }}>
               <span>{last_sync_count + tasks_existed}</span>
             </Tooltip>
             <Tooltip title={tasks_added_help}>
-              <span> ({last_sync_count} new)</span>
+              <span>
+                {" "}
+                ({t("new_tasks", { count: last_sync_count })})
+              </span>
             </Tooltip>
           </DescriptionList.Item>
         )}
 
-        <DescriptionList.Item term="Last Sync">
-          {storage.last_sync ? format(new Date(storage.last_sync), "MMMM dd, yyyy ∙ HH:mm:ss") : "Not synced yet"}
+        <DescriptionList.Item term={t("last_sync")}>
+          {storage.last_sync
+            ? format(new Date(storage.last_sync), "MMMM dd, yyyy ∙ HH:mm:ss")
+            : t("not_synced_yet")}
         </DescriptionList.Item>
       </DescriptionList>
     </div>
@@ -149,22 +165,26 @@ export const StorageSummary = ({ target, storage, className, storageTypes = [] }
 };
 
 const SummaryS3 = ({ storage }) => {
-  return <DescriptionList.Item term="Bucket">{storage.bucket}</DescriptionList.Item>;
+  const { t } = useTranslation();
+  return <DescriptionList.Item term={t("bucket")}>{storage.bucket}</DescriptionList.Item>;
 };
 
 const GSCStorage = ({ storage }) => {
-  return <DescriptionList.Item term="Bucket">{storage.bucket}</DescriptionList.Item>;
+  const { t } = useTranslation();
+  return <DescriptionList.Item term={t("bucket")}>{storage.bucket}</DescriptionList.Item>;
 };
 
 const AzureStorage = ({ storage }) => {
-  return <DescriptionList.Item term="Container">{storage.container}</DescriptionList.Item>;
+  const { t } = useTranslation();
+  return <DescriptionList.Item term={t("container")}>{storage.container}</DescriptionList.Item>;
 };
 
 const RedisStorage = ({ storage }) => {
+  const { t } = useTranslation();
   return (
     <>
-      <DescriptionList.Item term="Path">{storage.path}</DescriptionList.Item>
-      <DescriptionList.Item term="Host">
+      <DescriptionList.Item term={t("path")}>{storage.path}</DescriptionList.Item>
+      <DescriptionList.Item term={t("host")}>
         {storage.host}
         {storage.port ? `:${storage.port}` : ""}
       </DescriptionList.Item>
@@ -173,5 +193,6 @@ const RedisStorage = ({ storage }) => {
 };
 
 const LocalStorage = ({ storage }) => {
-  return <DescriptionList.Item term="Path">{storage.path}</DescriptionList.Item>;
+  const { t } = useTranslation();
+  return <DescriptionList.Item term={t("path")}>{storage.path}</DescriptionList.Item>;
 };

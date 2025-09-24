@@ -1,4 +1,5 @@
 import { Fragment, useCallback, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import sanitizeHtml from "sanitize-html";
 import { IconSlack } from "@humansignal/icons";
 import { Block, Elem } from "../../utils/bem";
@@ -20,6 +21,7 @@ export const ErrorWrapper = ({
   onReload,
   possum = false,
 }) => {
+  const { t } = useTranslation();
   const preparedStackTrace = useMemo(() => {
     return (stacktrace ?? "").trim();
   }, [stacktrace]);
@@ -40,7 +42,7 @@ export const ErrorWrapper = ({
           name="heidi"
           src={absoluteURL("/static/images/opossum_broken.svg")}
           height="111"
-          alt="Heidi's down"
+          alt={t("heidis_down")}
         />
       )}
 
@@ -79,8 +81,8 @@ export const ErrorWrapper = ({
       {(version || errorId) && (
         <Elem name="version">
           <Space>
-            {version && `Version: ${version}`}
-            {errorId && `Error ID: ${errorId}`}
+            {version && `${t("version")}: ${version}`}
+            {errorId && `${t("error_id")}: ${errorId}`}
           </Space>
         </Elem>
       )}
@@ -88,7 +90,7 @@ export const ErrorWrapper = ({
       <Elem name="actions">
         <Space spread>
           <Elem tag={Button} name="action-slack" target="_blank" icon={<IconSlack />} href={SLACK_INVITE_URL}>
-            Ask on Slack
+            {t("ask_on_slack")}
           </Elem>
 
           <Space size="small">
@@ -97,19 +99,19 @@ export const ErrorWrapper = ({
                 disabled={copied}
                 onClick={copyStacktrace}
                 className="w-[100px]"
-                aria-label="Copy error stacktrace"
+                aria-label={t("copy_error_stacktrace")}
               >
-                {copied ? "Copied" : "Copy Stacktrace"}
+                {copied ? t("copied") : t("copy_stacktrace")}
               </Button>
             )}
             {onGoBack && (
-              <Button onClick={onGoBack} aria-label="Go back">
-                Go Back
+              <Button onClick={onGoBack} aria-label={t("go_back")}>
+                {t("go_back")}
               </Button>
             )}
             {onReload && (
-              <Button onClick={onReload} aria-label="Reload page">
-                Reload
+              <Button onClick={onReload} aria-label={t("reload_page")}>
+                {t("reload")}
               </Button>
             )}
           </Space>

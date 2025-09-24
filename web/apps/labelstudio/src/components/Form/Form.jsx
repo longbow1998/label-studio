@@ -1,4 +1,5 @@
 import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { shallowEqualObjects } from "shallow-equal";
 import { ApiProvider } from "../../providers/ApiProvider";
 import { MultiProvider } from "../../providers/MultiProvider";
@@ -403,6 +404,7 @@ Form.Builder = React.forwardRef(
     },
     ref,
   ) => {
+    const { t } = useTranslation();
     const formRef = ref ?? useRef();
     const [fields, setFields] = useState(defaultFields ?? []);
     const [formData, setFormData] = useState(defaultFormData ?? {});
@@ -524,8 +526,8 @@ Form.Builder = React.forwardRef(
         {children}
         {props.autosubmit !== true && withActions === true && (
           <Form.Actions>
-            <Button type="submit" className="w-[120px]" aria-label="Submit form">
-              Save
+            <Button type="submit" className="w-[120px]" aria-label={t("submit_form")}>
+              {t("save")}
             </Button>
           </Form.Actions>
         )}
@@ -547,13 +549,14 @@ Form.Actions = ({ children, valid, extra, size }) => {
 };
 
 Form.Indicator = () => {
+  const { t } = useTranslation();
   const state = React.useContext(FormStateContext);
 
   return (
     <Block name="form-indicator">
       <Oneof value={state}>
         <Elem tag="span" mod={{ type: state }} name="item" case="success">
-          Saved!
+          {t("saved")}
         </Elem>
       </Oneof>
     </Block>

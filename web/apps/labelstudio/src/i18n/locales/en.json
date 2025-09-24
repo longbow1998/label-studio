@@ -1,0 +1,10 @@
+{
+  "model": "Model",
+  "predictions": "Predictions",
+  "delete_predictions": "Delete Predictions",
+  "delete_predictions_confirmation": "This action cannot be undone. Are you sure?",
+  "undefined_model_version_tooltip": "Model version is undefined. Likely means that model_version field was missing when predictions were imported.",
+  "last_prediction_created": "Last prediction created",
+  "delete": "Delete",
+  "prediction_version_options": "Prediction version options"
+}

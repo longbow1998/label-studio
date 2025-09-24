@@ -1,0 +1,10 @@
+{
+  "model": "模型",
+  "predictions": "预测",
+  "delete_predictions": "删除预测",
+  "delete_predictions_confirmation": "此操作无法撤销。你确定吗？",
+  "undefined_model_version_tooltip": "模型版本未定义。可能意味着导入预测时缺少 model_version 字段。",
+  "last_prediction_created": "最后一次预测创建",
+  "delete": "删除",
+  "prediction_version_options": "预测版本选项"
+}

@@ -1,3 +1,4 @@
+
 import { useMemo, useState, useEffect } from "react";
 import { useHistory } from "react-router";
 import { Button } from "@humansignal/ui";
@@ -119,6 +120,7 @@ export const DangerZone = () => {
                     waiting={waiting}
                     onClick={handleOnClick(btn.type)}
                     style={{ marginTop: 16 }}
+                    aria-label={btn.label}
                   >
                     {btn.label}
                   </Button>

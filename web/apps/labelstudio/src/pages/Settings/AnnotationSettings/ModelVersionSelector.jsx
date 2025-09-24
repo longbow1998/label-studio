@@ -2,6 +2,7 @@ import { useCallback, useContext, useEffect, useState } from "react";
 import { useAPI } from "../../../providers/ApiProvider";
 import { Select } from "../../../components/Form";
 import { ProjectContext } from "../../../providers/ProjectProvider";
+import { useTranslation } from "react-i18next";
 
 export const ModelVersionSelector = ({
   name = "model_version",
@@ -9,6 +10,7 @@ export const ModelVersionSelector = ({
   apiName = "projectModelVersions",
   ...props
 }) => {
+  const { t } = useTranslation();
   const api = useAPI();
   const { project } = useContext(ProjectContext);
   const [loading, setLoading] = useState(true);
@@ -36,10 +38,13 @@ export const ModelVersionSelector = ({
 
     if (modelVersions?.live?.length > 0) {
       const liveModels = modelVersions.live.map((item) => {
-        const label = `${item.title} (${item.readable_state})`;
+        const label = t("model_version_label", {
+          title: item.title,
+          state: item.readable_state,
+        });
 
         return {
-          group: "Models",
+          group: t("models"),
           value: item.title,
           label,
         };
@@ -50,10 +55,13 @@ export const ModelVersionSelector = ({
 
     if (modelVersions?.static?.length > 0) {
       const staticModels = modelVersions.static.map((item) => {
-        const label = `${item.model_version} (${item.count} predictions)`;
+        const label = t("prediction_version_label", {
+          version: item.model_version,
+          count: item.count,
+        });
 
         return {
-          group: "Predictions",
+          group: t("predictions"),
           value: item.model_version,
           label,
         };
@@ -63,11 +71,11 @@ export const ModelVersionSelector = ({
     }
 
     if (!modelVersions?.static?.length && !modelVersions?.live?.length) {
-      setPlaceholder("No model or predictions available");
+      setPlaceholder(t("no_model_or_predictions_available"));
     }
 
     setLoading(false);
-  }, [project?.id, apiName]);
+  }, [project?.id, apiName, t]);
 
   useEffect(() => {
     fetchMLVersions();
@@ -75,7 +83,7 @@ export const ModelVersionSelector = ({
 
   return (
     <div>
-      <label>Select which predictions or which model you want to use:</label>
+      <label>{t("select_which_predictions_or_model_to_use")}:</label>
       <div style={{ display: "flex", alignItems: "center", width: 400 }}>
         <div style={{ flex: 1, paddingRight: 16 }}>
           <Select
@@ -84,7 +92,7 @@ export const ModelVersionSelector = ({
             value={version}
             onChange={setVersion}
             options={[...models, ...versions]}
-            placeholder={placeholder || "Please select model or predictions"}
+            placeholder={placeholder || t("please_select_model_or_predictions")}
             isInProgress={loading}
             {...props}
           />

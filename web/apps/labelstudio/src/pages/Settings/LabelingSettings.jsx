@@ -1,9 +1,10 @@
 import { useCallback, useMemo, useState, useEffect } from "react";
-import { useAPI } from "../../providers/ApiProvider";
-import { useProject } from "../../providers/ProjectProvider";
-import { FF_UNSAVED_CHANGES, isFF } from "../../utils/feature-flags";
-import { isEmptyString } from "../../utils/helpers";
-import { ConfigPage } from "../CreateProject/Config/Config";
+import { useHistory } from "react-router-dom";
+import { useAPI } from "../../../providers/ApiProvider";
+import { useProject } from "../../../providers/ProjectProvider";
+import { FF_UNSAVED_CHANGES, isFF } from "../../../utils/feature-flags";
+import { isEmptyString } from "../../../utils/helpers";
+import { ConfigPage } from "../../CreateProject/Config/Config";
 import { useTranslation } from "react-i18next";
 
 export const LabelingSettings = () => {
@@ -11,12 +12,15 @@ export const LabelingSettings = () => {
   const { project, fetchProject, updateProject } = useProject();
   const [config, setConfig] = useState("");
   const [essentialDataChanged, setEssentialDataChanged] = useState(false);
+  const history = useHistory();
   const hasChanges = isFF(FF_UNSAVED_CHANGES) && config !== project.label_config;
   const api = useAPI();
 
   useEffect(() => {
     LabelingSettings.title = t("labeling_interface");
-  }, [t]);
+    LabelingSettings.path = "/labeling";
+    history.replace(`/projects/${project.id}/settings/labeling`);
+  }, [t, history, project.id]);
 
   const saveConfig = useCallback(
     isFF(FF_UNSAVED_CHANGES)
@@ -62,7 +66,6 @@ export const LabelingSettings = () => {
       const configIsEmpty = project.label_config.replace(/\s/g, "") === "<View></View>";
       const hasTasks = project.task_number > 0;
 
-      console.log({ hasConfig, configIsEmpty, hasTasks, project });
       return hasConfig && !configIsEmpty && hasTasks;
     }
     return false;
@@ -91,8 +94,7 @@ export const LabelingSettings = () => {
       onSaveClick={onSave}
       onValidate={onValidate}
       hasChanges={hasChanges}
+      showBackButton={false}
     />
   );
 };
-
-LabelingSettings.path = "/labeling";

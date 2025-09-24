@@ -1,5 +1,6 @@
 import { Button } from "@humansignal/ui";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { HeidiTips } from "../../../components/HeidiTips/HeidiTips";
 import { modal } from "../../../components/Modal/Modal";
 import { Space } from "../../../components/Space/Space";
@@ -15,10 +16,15 @@ import { InviteLink } from "./InviteLink";
 import { SelectedUser } from "./SelectedUser";
 
 export const PeoplePage = () => {
+  const { t } = useTranslation();
   const apiSettingsModal = useRef();
   const toast = useToast();
   const [selectedUser, setSelectedUser] = useState(null);
   const [invitationOpen, setInvitationOpen] = useState(false);
+
+  useEffect(() => {
+    PeoplePage.title = t("people");
+  }, [t]);
 
   const selectUser = useCallback(
     (user) => {
@@ -31,18 +37,18 @@ export const PeoplePage = () => {
 
   const apiTokensSettingsModalProps = useMemo(
     () => ({
-      title: "API Token Settings",
+      title: t("api_token_settings"),
       style: { width: 480 },
       body: () => (
         <TokenSettingsModal
           onSaved={() => {
-            toast.show({ message: "API Token settings saved" });
+            toast.show({ message: t("api_token_settings_saved") });
             apiSettingsModal.current?.close();
           }}
         />
       ),
     }),
-    [],
+    [t],
   );
 
   const showApiTokenSettingsModal = useCallback(() => {
@@ -62,16 +68,16 @@ export const PeoplePage = () => {
 
           <Space>
             {isFF(FF_AUTH_TOKENS) && (
-              <Button look="outlined" onClick={showApiTokenSettingsModal} aria-label="Show API token settings">
-                API Tokens Settings
+              <Button look="outlined" onClick={showApiTokenSettingsModal} aria-label={t("show_api_token_settings")}>
+                {t("api_tokens_settings")}
               </Button>
             )}
             <Button
               leading={<IconPlus className="!h-4" />}
               onClick={() => setInvitationOpen(true)}
-              aria-label="Invite new member"
+              aria-label={t("invite_new_member")}
             >
-              Add People
+              {t("add_people")}
             </Button>
           </Space>
         </Space>
@@ -100,5 +106,4 @@ export const PeoplePage = () => {
   );
 };
 
-PeoplePage.title = "People";
 PeoplePage.path = "/";

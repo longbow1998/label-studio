@@ -63,7 +63,7 @@ const ProjectName = ({ name, setName, onSaveName, onSubmit, error, description, 
             {t("workspace")}
             <EnterpriseBadge className="ml-2" />
           </label>
-          <Select placeholder="Select an option" disabled options={[]} triggerClassName="!flex-1" />
+          <Select placeholder={t("select_an_option", "Select an option")} disabled options={[]} triggerClassName="!flex-1" />
           <Typography size="small" className="mt-tight mb-wider">
             {t("workspace_description")}{" "}
             <a
